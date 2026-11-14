@@ -12,8 +12,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import org.json.JSONObject
 import java.util.UUID
 import java.util.concurrent.Executors
 
@@ -110,20 +108,16 @@ class MainActivity : Activity() {
         loginButton.isEnabled = false
         statusText.text = "Connecting securely to KIMTECH..."
 
-        val deviceUuid = getDeviceUuid()
-
         executor.execute {
             try {
                 val response = ApiClient.login(
                     this,
                     email,
                     password,
-                    deviceUuid
+                    getDeviceUuid()
                 )
 
-                val success = response.optBoolean("success", false)
-
-                if (!success) {
+                if (!response.optBoolean("success", false)) {
                     val error = response.optString(
                         "error",
                         "Login failed."
@@ -152,7 +146,7 @@ class MainActivity : Activity() {
                 if (token.isBlank()) {
                     runOnUiThread {
                         statusText.text =
-                            "Login response did not contain an access token."
+                            "Server response did not contain an access token."
                         loginButton.isEnabled = true
                     }
                     return@execute
@@ -161,6 +155,7 @@ class MainActivity : Activity() {
                 SecureTokenStore.save(this, token)
 
                 runOnUiThread {
+                    HealthWorker.schedule(this)
                     showDashboard(email)
                 }
 
@@ -209,11 +204,14 @@ class MainActivity : Activity() {
 
         val info = TextView(this).apply {
             text = """
-                Device enrollment has been submitted.
+                Device enrollment submitted.
 
                 Your authenticated session is stored securely.
-                Background security checks will be configured
-                through the Android monitoring service.
+
+                Background security checks are scheduled
+                through Android WorkManager.
+
+                Monitoring runs when Android permits it.
             """.trimIndent()
             textSize = 15f
             setTextColor(textColor)
@@ -243,6 +241,7 @@ class MainActivity : Activity() {
 
         if (uuid.isNullOrBlank()) {
             uuid = UUID.randomUUID().toString()
+
             preferences.edit()
                 .putString("device_uuid", uuid)
                 .apply()
@@ -262,10 +261,7 @@ class MainActivity : Activity() {
 
     private fun spacer(height: Int): View {
         return View(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                1,
-                height
-            )
+            layoutParams = LinearLayout.LayoutParams(1, height)
         }
     }
 
