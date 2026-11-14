@@ -1,7 +1,7 @@
 
 # KIMTECH Mobile Defender V3.0
 
-**Android Device Security Management**
+**Android Device Security Management*
 
 KIMTECH Mobile Defender is an Android companion application for KIMTECH Cyber Defense.
 
