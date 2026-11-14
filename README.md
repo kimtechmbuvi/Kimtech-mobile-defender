@@ -127,5 +127,3 @@ All rights reserved.
 
 KIMTECH Cyber Defense
 https://security.kimtech.co.ke
-
-Build verification: KIMTECH Mobile Defender V3.0
