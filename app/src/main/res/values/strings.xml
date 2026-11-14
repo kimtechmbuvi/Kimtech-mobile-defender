@@ -1,0 +1,10 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KIMTECH Mobile Defender</string>
+    <string name="app_version">3.0.0</string>
+    <string name="app_subtitle">Android Device Security Management</string>
+    <string name="login_title">KIMTECH CYBER DEFENSE</string>
+    <string name="login_button">SIGN IN AND ENROLL DEVICE</string>
+    <string name="dashboard_title">MOBILE DEFENDER</string>
+</resources>
